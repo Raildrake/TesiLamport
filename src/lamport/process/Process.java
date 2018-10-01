@@ -94,7 +94,7 @@ public abstract class Process<T extends Payload> {
             e.printStackTrace();
         }
     }
-    private T Receive(Socket s) {
+    protected T Receive(Socket s) {
         try {
             BufferedInputStream bis=new BufferedInputStream((s.getInputStream()));
             return T.Decode(bis);

@@ -1,10 +1,11 @@
 package lamport.payload;
 
+import lamport.timestamps.SimpleTimestamp;
+
 public class TimestampedPayload extends Payload {
 
-    private int timestamp=0;
+    private SimpleTimestamp timestamp=new SimpleTimestamp();
 
-    public int GetTimestamp() { return timestamp; }
-    public void SetTimestamp(int t) { timestamp = t; }
+    public SimpleTimestamp GetTimestamp() { return timestamp; }
 
 }

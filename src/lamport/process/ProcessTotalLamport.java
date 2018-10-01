@@ -3,6 +3,7 @@ package lamport.process;
 import lamport.payload.TimestampedIDPayload;
 import lamport.payload.TimestampedPayload;
 import lamport.payload.TimestampedPayload;
+import lamport.timestamps.UniqueTimestamp;
 
 import java.net.Socket;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,16 +14,13 @@ public class ProcessTotalLamport extends Process<TimestampedIDPayload> {
 
     public ProcessTotalLamport(int port) {
         super(port);
-        SetTimestamp(0,port);
+        GetTimestamp().Set(0,port);
     }
 
-    private int[] timestamp={0,0}; //TODO: classe apposita per timestamp per evitare ridondanza
+    private UniqueTimestamp timestamp=new UniqueTimestamp(); //TODO: classe apposita per timestamp per evitare ridondanza
     private Lock lockTimestamp=new ReentrantLock(); //l'accesso a timestamp deve essere gestito da un lock unico per evitare conflitti di concorrenza
 
-    public int[] GetTimestamp() { return timestamp; }
-    public void SetTimestamp(int[] t) { timestamp = t; }
-    public void SetTimestamp(int time) { timestamp[0] = time; }
-    public void SetTimestamp(int time, int id) { timestamp[0] = time; timestamp[1] = id; }
+    public UniqueTimestamp GetTimestamp() { return timestamp; }
 
     @Override
     void OutputHandler() {
@@ -32,15 +30,14 @@ public class ProcessTotalLamport extends Process<TimestampedIDPayload> {
             } catch (Exception e) { }
 
             lockTimestamp.lock();
-
-            SetTimestamp(GetTimestamp()[0] + 1);
+            GetTimestamp().Add(1);
+            lockTimestamp.unlock();
 
             TimestampedIDPayload payload = new TimestampedIDPayload();
-            payload.SetTimestamp(GetTimestamp());
+            payload.GetTimestamp().Set(GetTimestamp(),false);
 
             Send(GetRandomOutSocket(), payload);
 
-            lockTimestamp.unlock();
         }
     }
 
@@ -49,11 +46,12 @@ public class ProcessTotalLamport extends Process<TimestampedIDPayload> {
 
         lockTimestamp.lock();
 
-        int[] t=payload.GetTimestamp();
-        int newT=Math.max(t[0],GetTimestamp()[0])+1;
-        Log("Received packet with timestamp ("+payload.GetTimestamp()[0]+","+payload.GetTimestamp()[1]+"), current timestamp is ("+GetTimestamp()[0]+","+GetTimestamp()[1]+").");
-        Log("New timestamp is ("+newT+","+GetTimestamp()[1]+").");
-        SetTimestamp(newT);
+        UniqueTimestamp t=payload.GetTimestamp();
+        UniqueTimestamp newT=UniqueTimestamp.Max(t,GetTimestamp());
+        newT.Add(1);
+        Log("Received packet with timestamp "+payload.GetTimestamp()+", current timestamp is "+GetTimestamp()+".");
+        GetTimestamp().Set(newT,true);
+        Log("New timestamp is "+GetTimestamp()+".");
 
         lockTimestamp.unlock();
 
