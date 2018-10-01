@@ -12,15 +12,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Process<T extends Payload> {
 
     private int port;
     private Thread listenThread;
+    private Thread outThread;
 
     private DataStore dataStore=new DataStore();
 
-    private HashMap<Socket,Thread> outConnections=new HashMap<>();
+    //private HashMap<Socket,Thread> outConnections=new HashMap<>();
+    private List<Socket> outSockets=new LinkedList<>();
     private HashMap<Socket,Thread> inConnections=new HashMap<>();
 
     public Process(int port) {
@@ -29,10 +32,20 @@ public abstract class Process<T extends Payload> {
         GetDataStore().Add("A",0);
         GetDataStore().Add("B",0);
         GetDataStore().Add("C",0);
+
+    }
+    public void Start() {
+        outThread=new Thread(()->OutputHandler());
+        outThread.start();
     }
 
     public int GetPort() { return port; }
     public DataStore GetDataStore() { return dataStore; }
+    protected List<Socket> GetOutSockets() { return outSockets; }
+    protected Socket GetRandomOutSocket() {
+        List<Socket> socks=GetOutSockets();
+        return socks.get(ThreadLocalRandom.current().nextInt(0,socks.size()));
+    }
 
     public boolean Connect(String host, int port) {
         Log("Attempting to connect to " + host + ":" + port + "...");
@@ -43,9 +56,10 @@ public abstract class Process<T extends Payload> {
                 return false;
 
             Log("Connection established with " + host + ":" + port);
-            Thread oT = new Thread(() -> OutputSocketHandler(s)); //da notare che anche se è socket di output, ha una inputstream che useremo!
-            oT.start();
-            outConnections.put(s,oT);
+            //Thread oT = new Thread(() -> OutputSocketHandler(s)); //da notare che anche se è socket di output, ha una inputstream che useremo!
+            //oT.start();
+            //outConnections.put(s,oT);
+            outSockets.add(s);
 
             return true;
         } catch (IOException e) {
@@ -94,7 +108,8 @@ public abstract class Process<T extends Payload> {
         return GetDataStore().ProcessPayload(payload);
     }
 
-    abstract void OutputSocketHandler(Socket s); //Ogni connessione in uscita è indipendente e agisce per conto proprio
+    abstract void OutputHandler();
+    //abstract void OutputSocketHandler(Socket s); //Ogni connessione in uscita è indipendente e agisce per conto proprio
     void InputSocketHandler(Socket s) {
         while(true) {
             T payload=Receive(s);

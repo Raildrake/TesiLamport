@@ -33,6 +33,7 @@ public class Main {
             case "NoSync": process=new ProcessNoSync(listenPort); break;
             case "PartialLamport": process=new ProcessPartialLamport(listenPort); break;
             case "TotalLamport": process=new ProcessTotalLamport(listenPort); break;
+            case "SimpleCommit": process=new ProcessSimpleCommit(listenPort); break;
         }
 
         process.Listen();
@@ -41,6 +42,7 @@ public class Main {
             if (process.Connect(targetHosts.get(0).getKey(), targetHosts.get(0).getValue()))
                 targetHosts.remove(0);
         }
+        process.Start();
 
     }
 }

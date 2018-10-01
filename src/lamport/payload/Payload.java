@@ -4,7 +4,7 @@ import java.io.*;
 
 public abstract class Payload implements Serializable {
 
-    public enum Request { VOID, GET, SET }
+    public enum Request { VOID, READ, WRITE, WRITE_COMMIT, PREWRITE }
 
     private Request request = Request.VOID;
     private String target = "";

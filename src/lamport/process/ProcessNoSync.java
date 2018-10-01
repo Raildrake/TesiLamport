@@ -21,7 +21,7 @@ public class ProcessNoSync extends Process<TimestampedPayload> {
     public void SetTimestamp(int t) { timestamp = t; }
 
     @Override
-    void OutputSocketHandler(Socket s) {
+    void OutputHandler() {
         while(true) {
             try {
                 Thread.sleep(ThreadLocalRandom.current().nextInt(100, 3000));
@@ -34,7 +34,7 @@ public class ProcessNoSync extends Process<TimestampedPayload> {
             TimestampedPayload payload = new TimestampedPayload();
             payload.SetTimestamp(GetTimestamp());
 
-            Send(s, payload);
+            Send(GetRandomOutSocket(), payload);
 
             lockTimestamp.unlock();
         }

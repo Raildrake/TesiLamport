@@ -57,11 +57,11 @@ public class DataStore {
             case VOID:
                 targetLock.unlock();
                 return new DataOutput(true);
-            case GET:
+            case READ:
                 int res=GetValue(p.GetTarget());
                 targetLock.unlock();
                 return new DataOutput(true,res);
-            case SET:
+            case WRITE:
                 SetValue(p.GetTarget(),p.GetArg1());
                 targetLock.unlock();
                 return new DataOutput(true);
