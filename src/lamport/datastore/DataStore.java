@@ -12,62 +12,66 @@ public class DataStore {
 
     public class DataOutput {
         private boolean success;
-        private int value;
+        private Object value;
 
         public DataOutput(boolean success) {
             this.success=success;
         }
-        public DataOutput(boolean success, int value) {
+        public DataOutput(boolean success, Object value) {
             this(success);
             this.value=value;
         }
 
         public boolean WasSuccessful() { return success; }
-        public int GetValue() { return value; }
+        public Object GetValue() { return value; }
     }
+    private class LockedObject {
+        private Lock lock;
+        private Object obj;
 
-    private HashMap<String,Pair<Integer,Lock>> data=new HashMap<>();
-
-    public void Add(String name, int value) {
-        data.put(name,new Pair<>(value,new ReentrantLock()));
-    }
-
-    private boolean Exists(String n) {
-        return data.containsKey(n);
-    }
-    private int GetValue(String n) {
-        return data.get(n).getKey();
-    }
-    private void SetValue(String n, int value) {
-        Lock lock=GetLock(n);
-        data.remove(n);
-        data.put(n,new Pair<>(value,lock)); //TODO: usare alternativa a Pair che sia più flessibile
-    }
-    private Lock GetLock(String n) {
-        return data.get(n).getValue();
-    }
-
-    public DataOutput ProcessPayload(Payload p) {
-        if (!Exists(p.GetTarget())) return new DataOutput(false);
-
-        Lock targetLock=GetLock(p.GetTarget());
-        targetLock.lock();
-
-        switch (p.GetRequest()) {
-            case VOID:
-                targetLock.unlock();
-                return new DataOutput(true);
-            case READ:
-                int res=GetValue(p.GetTarget());
-                targetLock.unlock();
-                return new DataOutput(true,res);
-            case WRITE:
-                SetValue(p.GetTarget(),p.GetArg1());
-                targetLock.unlock();
-                return new DataOutput(true);
+        public LockedObject(Object obj, Lock lock) {
+            this.obj=obj;
+            this.lock=lock;
         }
 
-        targetLock.unlock();
-        return new DataOutput(false);
+        public Lock GetLock() { return lock; }
+        public void SetLock(Lock l) { lock=l; }
+
+        public Object GetObject() { return obj; }
+        public void SetObject(Object obj) { this.obj=obj; }
     }
+
+    private HashMap<String,LockedObject> data=new HashMap<>();
+
+    public void Add(String name, Object value) {
+        data.put(name,new LockedObject(value,new ReentrantLock()));
+    }
+
+    public boolean Exists(String n) {
+        return data.containsKey(n);
+    }
+    public Object GetValue(String n) {
+        if (!Exists(n)) return null;
+        //Lock(n);
+        Object res=data.get(n).GetObject();
+        //Unlock(n);
+        return res;
+    }
+    public void SetValue(String n, Object value) {
+        //Lock(n);
+        data.get(n).SetObject(value);
+        //Unlock(n);
+    }
+    private Lock GetLock(String n) {
+        return data.get(n).GetLock();
+    }
+    public void Lock(String n) {
+        if (!Exists(n)) return;
+        GetLock(n).lock();
+    }
+    public void Unlock(String n) {
+        if (!Exists(n)) return;
+        GetLock(n).unlock();
+    }
+
 }

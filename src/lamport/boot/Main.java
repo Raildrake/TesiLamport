@@ -35,7 +35,7 @@ public class Main {
             case "TotalLamport": process=new ProcessTotalLamport(listenPort); break;
             case "SimpleCommit": process=new ProcessSimpleCommit(listenPort); break;
         }
-
+        process.SetArtificialDelay(100,1000);
         process.Listen();
 
         while (targetHosts.size()>0) {

@@ -11,6 +11,10 @@ public class UniqueTimestamp implements Serializable {
     public UniqueTimestamp(int uid) {
         this.uid=uid;
     }
+    public UniqueTimestamp(int t, int uid) {
+        this.t=t;
+        this.uid=uid;
+    }
 
     public void Add(int val) { t+=val; }
     public void Set(int val) { t=val; }

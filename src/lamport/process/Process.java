@@ -17,6 +17,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class Process<T extends Payload> {
 
     private int port;
+    private int artificialDelayMin=0; //introduciamo un ritardo artificiale nella rete per amplificare gli effetti dell'accesso concorrente
+    private int artificialDelayMax=0;
     private Thread listenThread;
     private Thread outThread;
 
@@ -28,17 +30,16 @@ public abstract class Process<T extends Payload> {
 
     public Process(int port) {
         this.port=port;
-
-        GetDataStore().Add("A",0);
-        GetDataStore().Add("B",0);
-        GetDataStore().Add("C",0);
-
     }
     public void Start() {
         outThread=new Thread(()->OutputHandler());
         outThread.start();
     }
 
+    public void SetArtificialDelay(int min, int max) {
+        artificialDelayMin=min;
+        artificialDelayMax=max;
+    }
     public int GetPort() { return port; }
     public DataStore GetDataStore() { return dataStore; }
     protected List<Socket> GetOutSockets() { return outSockets; }
@@ -56,9 +57,6 @@ public abstract class Process<T extends Payload> {
                 return false;
 
             Log("Connection established with " + host + ":" + port);
-            //Thread oT = new Thread(() -> OutputSocketHandler(s)); //da notare che anche se è socket di output, ha una inputstream che useremo!
-            //oT.start();
-            //outConnections.put(s,oT);
             outSockets.add(s);
 
             return true;
@@ -104,15 +102,13 @@ public abstract class Process<T extends Payload> {
         return null;
     }
 
-    private DataStore.DataOutput ProcessPayload(Payload payload) {
-        return GetDataStore().ProcessPayload(payload);
-    }
-
     abstract void OutputHandler();
-    //abstract void OutputSocketHandler(Socket s); //Ogni connessione in uscita è indipendente e agisce per conto proprio
     void InputSocketHandler(Socket s) {
         while(true) {
             T payload=Receive(s);
+            try {
+                Thread.sleep(ThreadLocalRandom.current().nextInt(artificialDelayMin, artificialDelayMax));
+            } catch (Exception e) { }
             PayloadReceivedHandler(s,payload);
         }
     }

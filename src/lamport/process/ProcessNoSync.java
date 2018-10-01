@@ -27,9 +27,9 @@ public class ProcessNoSync extends Process<TimestampedPayload> {
                 Thread.sleep(ThreadLocalRandom.current().nextInt(100, 3000));
             } catch (Exception e) { }
 
-            lockTimestamp.lock();
-            GetTimestamp().Add(1);
-            lockTimestamp.unlock();
+            synchronized(GetTimestamp()) {
+                GetTimestamp().Add(1);
+            }
 
             TimestampedPayload payload = new TimestampedPayload();
             payload.GetTimestamp().Set(GetTimestamp());

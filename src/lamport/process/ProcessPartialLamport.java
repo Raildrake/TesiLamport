@@ -5,8 +5,8 @@ import lamport.timestamps.SimpleTimestamp;
 
 import java.net.Socket;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ProcessPartialLamport extends Process<TimestampedPayload> {
 
@@ -15,7 +15,7 @@ public class ProcessPartialLamport extends Process<TimestampedPayload> {
     }
 
     private SimpleTimestamp timestamp=new SimpleTimestamp();
-    private Lock lockTimestamp=new ReentrantLock(); //l'accesso a timestamp deve essere gestito da un lock unico per evitare conflitti di concorrenza
+    private ReadWriteLock timestampLock=new ReentrantReadWriteLock();
 
     public SimpleTimestamp GetTimestamp() { return timestamp; }
 
@@ -26,9 +26,9 @@ public class ProcessPartialLamport extends Process<TimestampedPayload> {
                 Thread.sleep(ThreadLocalRandom.current().nextInt(100, 3000));
             } catch (Exception e) { }
 
-            lockTimestamp.lock();
+            timestampLock.writeLock().lock();
             GetTimestamp().Add(1);
-            lockTimestamp.unlock();
+            timestampLock.writeLock().unlock();
 
             TimestampedPayload payload = new TimestampedPayload();
             payload.GetTimestamp().Set(GetTimestamp());
@@ -41,17 +41,17 @@ public class ProcessPartialLamport extends Process<TimestampedPayload> {
     @Override
     void PayloadReceivedHandler(Socket s, TimestampedPayload payload) {
 
-        lockTimestamp.lock();
+        timestampLock.writeLock().lock();
 
-        SimpleTimestamp t=payload.GetTimestamp();
-        SimpleTimestamp newT=SimpleTimestamp.Max(t,GetTimestamp());
+        SimpleTimestamp t = payload.GetTimestamp();
+        SimpleTimestamp newT = SimpleTimestamp.Max(t, GetTimestamp());
         newT.Add(1);
 
-        Log("Received packet with timestamp "+t+", current timestamp is "+GetTimestamp()+".");
+        Log("Received packet with timestamp " + t + ", current timestamp is " + GetTimestamp() + ".");
         GetTimestamp().Set(newT);
-        Log("New timestamp is "+GetTimestamp()+".");
+        Log("New timestamp is " + GetTimestamp() + ".");
 
-        lockTimestamp.unlock();
+        timestampLock.writeLock().unlock();
 
     }
 
