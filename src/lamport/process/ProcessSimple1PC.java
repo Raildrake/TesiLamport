@@ -1,6 +1,5 @@
 package lamport.process;
 
-import lamport.datastore.DataStore;
 import lamport.datastore.TimestampedRecord;
 import lamport.payload.Payload;
 import lamport.payload.TimestampedIDPayload;
@@ -11,9 +10,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ProcessSimpleCommit extends Process<TimestampedIDPayload> {
+public class ProcessSimple1PC extends Process<TimestampedIDPayload> {
 
-    public ProcessSimpleCommit(int port) {
+    public ProcessSimple1PC(int port) {
         super(port);
         GetTimestamp().Set(0,port);
 
@@ -22,16 +21,17 @@ public class ProcessSimpleCommit extends Process<TimestampedIDPayload> {
         GetDataStore().Add("C",new TimestampedRecord(5));
     }
 
-    private UniqueTimestamp timestamp=new UniqueTimestamp(); //TODO: classe apposita per timestamp per evitare ridondanza
-    private ReadWriteLock timestampLock=new ReentrantReadWriteLock();
-    private int failCount=0;
-    private int successCount=0;
+    protected UniqueTimestamp timestamp=new UniqueTimestamp(); //TODO: classe apposita per timestamp per evitare ridondanza
+    protected ReadWriteLock timestampLock=new ReentrantReadWriteLock();
+    protected int failCount=0;
+    protected int successCount=0;
 
     public UniqueTimestamp GetTimestamp() { return timestamp; }
 
     TimestampedIDPayload SendAndWaitResponse(UniqueTimestamp transactionTS, Socket s, Payload.Request req, String data, int val) {
         SendPayload(transactionTS,s,req,data,val);
         TimestampedIDPayload resPayload=Receive(s);
+        ProcessTimestamp(resPayload);
 
         return resPayload;
     }
@@ -88,18 +88,24 @@ public class ProcessSimpleCommit extends Process<TimestampedIDPayload> {
     void PayloadReceivedHandler(Socket s, TimestampedIDPayload payload) {
 
         //elaboro prima il timestamp a prescindere
+        ProcessTimestamp(payload);
+
+        //ora elaboro la richiesta
+        ProcessRequest(s,payload);
+    }
+
+    protected void ProcessTimestamp(TimestampedIDPayload payload) {
         timestampLock.writeLock().lock();
 
         UniqueTimestamp t = payload.GetTimestamp();
         UniqueTimestamp newT = UniqueTimestamp.Max(t, GetTimestamp());
         newT.Add(1);
-        //Log("Received packet with timestamp " + payload.GetTimestamp() + ", current timestamp is " + GetTimestamp() + ".");
         GetTimestamp().Set(newT, true);
-        //Log("New timestamp is " + GetTimestamp() + ".");
 
         timestampLock.writeLock().unlock();
+    }
 
-        //ora elaboro la richiesta
+    void ProcessRequest(Socket s, TimestampedIDPayload payload) {
         //Siccome qui arrivano le richieste sul listen socket, possiamo aspettarci solo read o write
         if (payload.GetRequest()==Payload.Request.READ) {
             String n = payload.GetTarget();
@@ -113,7 +119,7 @@ public class ProcessSimpleCommit extends Process<TimestampedIDPayload> {
             if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW, abbiamo TS<W-TS
                 SendPayload(ts, s, Payload.Request.FAIL, payload.GetTarget(), -1);
             } else {
-                SendPayload(ts, s, Payload.Request.SUCCESS, payload.GetTarget(), record.GetValue());
+                SendPayload(ts, s, Payload.Request.SUCCESS_READ, payload.GetTarget(), record.GetValue());
                 record.SetR_TS(payload.GetTimestamp());
             }
 
@@ -131,14 +137,13 @@ public class ProcessSimpleCommit extends Process<TimestampedIDPayload> {
             if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp()) || record.GetR_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW/WW, abbiamo TS<W-TS oppure TS<R-TS
                 SendPayload(ts, s, Payload.Request.FAIL, payload.GetTarget(), -1);
             } else {
-                SendPayload(ts, s, Payload.Request.SUCCESS, payload.GetTarget(), payload.GetArg1());
+                SendPayload(ts, s, Payload.Request.SUCCESS_WRITE, payload.GetTarget(), payload.GetArg1());
                 record.SetValue(payload.GetArg1());
                 record.SetW_TS(payload.GetTimestamp());
             }
 
             GetDataStore().Unlock(n);
         }
-
     }
 
 }

@@ -30,6 +30,7 @@ public class UniqueTimestamp implements Serializable {
     public boolean IsGreaterThan(UniqueTimestamp t2) {
         return t>t2.t || (t==t2.t && uid>t2.uid);
     }
+    public boolean IsEqualTo(UniqueTimestamp t2) { return t==t2.t && uid==t2.uid; }
 
     /* Ritorna una nuova istanza di SimpleTimestamp col valore più grande tra t1 e t2 */
     public static UniqueTimestamp Max(UniqueTimestamp t1, UniqueTimestamp t2) {

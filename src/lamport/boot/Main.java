@@ -33,7 +33,8 @@ public class Main {
             case "NoSync": process=new ProcessNoSync(listenPort); break;
             case "PartialLamport": process=new ProcessPartialLamport(listenPort); break;
             case "TotalLamport": process=new ProcessTotalLamport(listenPort); break;
-            case "SimpleCommit": process=new ProcessSimpleCommit(listenPort); break;
+            case "Simple1PC": process=new ProcessSimple1PC(listenPort); break;
+            case "Simple2PC": process=new ProcessSimple2PC(listenPort); break;
         }
         process.SetArtificialDelay(100,1000);
         process.Listen();

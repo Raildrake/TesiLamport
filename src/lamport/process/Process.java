@@ -85,6 +85,9 @@ public abstract class Process<T extends Payload> {
 
     public void Send(Socket s, Payload p) {
         try {
+            p.SetHost(GetPort());
+            p.SetUsedSocket(s);
+
             BufferedOutputStream bos=new BufferedOutputStream(s.getOutputStream());
             bos.write(p.Encode());
             bos.flush();
@@ -94,10 +97,13 @@ public abstract class Process<T extends Payload> {
     }
     protected T Receive(Socket s) {
         try {
+            //s.setSoTimeout(2000); //per quando vogliamo ciclare su più socket
             BufferedInputStream bis=new BufferedInputStream((s.getInputStream()));
-            return T.Decode(bis);
+            T res=T.Decode(bis);
+            res.SetUsedSocket(s);
+            return res;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return null;
     }
@@ -109,12 +115,15 @@ public abstract class Process<T extends Payload> {
             try {
                 Thread.sleep(ThreadLocalRandom.current().nextInt(artificialDelayMin, artificialDelayMax));
             } catch (Exception e) { }
-            PayloadReceivedHandler(s,payload);
+            if (payload!=null) PayloadReceivedHandler(s,payload);
         }
     }
     abstract void PayloadReceivedHandler(Socket s, T payload);
 
     protected void Log(Object msg) {
-        System.out.println("["+(new Date()).toString()+"] HOST"+this.GetPort()+": "+msg);
+        System.out.println(CurTime()+" HOST"+this.GetPort()+": "+msg);
+    }
+    protected String CurTime() {
+        return "["+(new Date()).toString()+"]";
     }
 }

@@ -74,4 +74,7 @@ public class DataStore {
         GetLock(n).unlock();
     }
 
+    public void Clear() {
+        this.data=new HashMap<>();
+    }
 }

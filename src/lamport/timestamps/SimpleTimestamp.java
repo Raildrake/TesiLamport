@@ -11,6 +11,7 @@ public class SimpleTimestamp implements Serializable {
     public void Set(SimpleTimestamp val) { t=val.t; }
 
     public boolean IsGreaterThan(SimpleTimestamp t2) { return t>t2.t; }
+    public boolean IsEqualTo(SimpleTimestamp t2) { return t==t2.t; }
 
     /* Ritorna una nuova istanza di SimpleTimestamp col valore più grande tra t1 e t2 */
     public static SimpleTimestamp Max(SimpleTimestamp t1, SimpleTimestamp t2) {
