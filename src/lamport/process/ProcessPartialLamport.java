@@ -8,16 +8,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ProcessPartialLamport extends Process<TimestampedPayload> {
+public class ProcessPartialLamport extends Process<TimestampedPayload, SimpleTimestamp> {
 
     public ProcessPartialLamport(int port) {
-        super(port);
+        super(port,SimpleTimestamp.class);
     }
 
-    private SimpleTimestamp timestamp=new SimpleTimestamp();
     private ReadWriteLock timestampLock=new ReentrantReadWriteLock();
-
-    public SimpleTimestamp GetTimestamp() { return timestamp; }
 
     @Override
     void OutputHandler() {
@@ -39,7 +36,7 @@ public class ProcessPartialLamport extends Process<TimestampedPayload> {
     }
 
     @Override
-    void PayloadReceivedHandler(Socket s, TimestampedPayload payload) {
+    void PayloadReceivedHandler(TimestampedPayload payload) {
 
         timestampLock.writeLock().lock();
 

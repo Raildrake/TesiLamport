@@ -9,16 +9,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ProcessNoSync extends Process<TimestampedPayload> {
+public class ProcessNoSync extends Process<TimestampedPayload,SimpleTimestamp> {
 
-    public ProcessNoSync(int port) {
-        super(port);
-    }
+    public ProcessNoSync(int port) { super(port, SimpleTimestamp.class); }
 
-    private SimpleTimestamp timestamp=new SimpleTimestamp();
     private Lock lockTimestamp=new ReentrantLock(); //l'accesso a timestamp deve essere gestito da un lock unico per evitare conflitti di concorrenza
-
-    public SimpleTimestamp GetTimestamp() { return timestamp; }
 
     @Override
     void OutputHandler() {
@@ -40,7 +35,7 @@ public class ProcessNoSync extends Process<TimestampedPayload> {
     }
 
     @Override
-    void PayloadReceivedHandler(Socket s, TimestampedPayload payload) {
+    void PayloadReceivedHandler(TimestampedPayload payload) {
 
         lockTimestamp.lock();
 

@@ -2,7 +2,7 @@ package lamport.timestamps;
 
 import java.io.Serializable;
 
-public class SimpleTimestamp implements Serializable {
+public class SimpleTimestamp extends GenericTimestamp implements Serializable {
 
     private int t=0;
 

@@ -1,21 +1,16 @@
 package lamport.payload;
 
+import lamport.timestamps.GenericTimestamp;
+
 import java.io.*;
 import java.net.Socket;
 
-public abstract class Payload implements Serializable {
-
-    public enum Request {
-        VOID, READ, WRITE, PREWRITE,
-        FAIL, SUCCESS_WRITE, SUCCESS_READ, BUFFERED_READ, BUFFERED_WRITE, BUFFERED_PREWRITE,
-        READ_CANCEL, WRITE_CANCEL, PREWRITE_CANCEL, SUCCESS_CANCEL
-    }
-
+public abstract class Payload<T extends GenericTimestamp> implements Serializable, Timestamped<T> {
     private Request request = Request.VOID;
     private String target = "";
     private int arg1 = 0;
     private int host=0;
-    private transient Socket usedSocket; //questa non la serializziamo, ci serve solo dopo aver inviato un payload per tenere traccia del socket usato
+    private transient Socket usedSocket; //questa non la serializziamo, ci serve solo dopo aver inviato/ricevuto un payload per tenere traccia del socket usato localmente
 
     public Request GetRequest() { return request; }
     public void SetRequest(Request req) { request=req; }
@@ -33,21 +28,24 @@ public abstract class Payload implements Serializable {
     public void SetUsedSocket(Socket val) { usedSocket=val; }
 
 
-    public byte[] Encode() throws IOException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream objOut =new ObjectOutputStream(byteOut);
-        objOut.writeObject(this);
-        objOut.close();
-        byteOut.close();
-        return byteOut.toByteArray();
+    public void Encode(ObjectOutputStream out) throws IOException {
+        out.writeObject(this);
+        out.flush();
     }
-    public static <T extends Payload> T Decode( InputStream input) throws IOException, ClassNotFoundException {
+    public static <T extends Payload> T Decode(ObjectInputStream input) throws IOException, ClassNotFoundException {
         T res;
 
-        ObjectInputStream objIn=new ObjectInputStream(input);
-        res=(T)objIn.readObject();
+        res=(T)input.readObject();
 
         return res;
+    }
+
+    public void CopyFrom(Payload<T> src) {
+        SetRequest(src.GetRequest());
+        SetTarget(src.GetTarget());
+        SetArg1(src.GetArg1());
+        SetHost(src.GetHost());
+        SetUsedSocket(src.GetUsedSocket());
     }
 
 }

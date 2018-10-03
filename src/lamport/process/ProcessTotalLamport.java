@@ -12,17 +12,14 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ProcessTotalLamport extends Process<TimestampedIDPayload> {
+public class ProcessTotalLamport extends Process<TimestampedIDPayload,UniqueTimestamp> {
 
     public ProcessTotalLamport(int port) {
-        super(port);
+        super(port,UniqueTimestamp.class);
         GetTimestamp().Set(0,port);
     }
 
-    private UniqueTimestamp timestamp=new UniqueTimestamp(); //TODO: classe apposita per timestamp per evitare ridondanza
     private ReadWriteLock timestampLock=new ReentrantReadWriteLock();
-
-    public UniqueTimestamp GetTimestamp() { return timestamp; }
 
     @Override
     void OutputHandler() {
@@ -44,7 +41,7 @@ public class ProcessTotalLamport extends Process<TimestampedIDPayload> {
     }
 
     @Override
-    void PayloadReceivedHandler(Socket s, TimestampedIDPayload payload) {
+    void PayloadReceivedHandler(TimestampedIDPayload payload) {
 
         timestampLock.writeLock().lock();
 

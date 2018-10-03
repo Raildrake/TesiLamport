@@ -2,7 +2,7 @@ package lamport.timestamps;
 
 import java.io.Serializable;
 
-public class UniqueTimestamp implements Serializable {
+public class UniqueTimestamp extends GenericTimestamp implements Serializable {
 
     private int t=0;
     private int uid=-1;

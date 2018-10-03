@@ -71,7 +71,9 @@ public class DataStore {
     }
     public void Unlock(String n) {
         if (!Exists(n)) return;
-        GetLock(n).unlock();
+        try {
+            GetLock(n).unlock();
+        } catch (Exception e) {}
     }
 
     public void Clear() {
