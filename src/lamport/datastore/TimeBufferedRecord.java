@@ -1,50 +1,52 @@
 package lamport.datastore;
 
-import lamport.payload.TimestampedIDPayload;
-import lamport.timestamps.UniqueTimestamp;
+import lamport.payload.Payload;
+import lamport.timestamps.Timestamp;
 
 import java.util.PriorityQueue;
 
 public class TimeBufferedRecord {
 
     private int value;
-    private UniqueTimestamp w_ts=new UniqueTimestamp(-1,-1);
-    private UniqueTimestamp r_ts=new UniqueTimestamp(-1,-1);
+    private Timestamp w_ts=new Timestamp(-1,-1,-1);
+    private Timestamp r_ts=new Timestamp(-1,-1,-1);
 
-    private PriorityQueue<TimestampedIDPayload> readBuffer=
-            new PriorityQueue<>((TimestampedIDPayload p1, TimestampedIDPayload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
-    private PriorityQueue<TimestampedIDPayload> writeBuffer=
-            new PriorityQueue<>((TimestampedIDPayload p1, TimestampedIDPayload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
-    private PriorityQueue<TimestampedIDPayload> prewriteBuffer=
-            new PriorityQueue<>((TimestampedIDPayload p1, TimestampedIDPayload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
+    private PriorityQueue<Payload> readBuffer=
+            new PriorityQueue<>((Payload p1, Payload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
+    private PriorityQueue<Payload> writeBuffer=
+            new PriorityQueue<>((Payload p1, Payload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
+    private PriorityQueue<Payload> prewriteBuffer=
+            new PriorityQueue<>((Payload p1, Payload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
 
     public int GetValue() { return value; }
     public void SetValue(int v) { value=v; }
 
-    public UniqueTimestamp GetW_TS() { return w_ts; }
-    public void SetW_TS(UniqueTimestamp v) { w_ts=v; }
+    public Timestamp GetW_TS() { return w_ts; }
+    public void SetW_TS(Timestamp v) { w_ts=v; }
 
-    public UniqueTimestamp GetR_TS() { return r_ts; }
-    public void SetR_TS(UniqueTimestamp v) { r_ts=v; }
+    public Timestamp GetR_TS() { return r_ts; }
+    public void SetR_TS(Timestamp v) { r_ts=v; }
 
-    public PriorityQueue<TimestampedIDPayload> GetReadBuffer() {return readBuffer;}
-    public PriorityQueue<TimestampedIDPayload> GetWriteBuffer() {return writeBuffer;}
-    public PriorityQueue<TimestampedIDPayload> GetPrewriteBuffer() {return prewriteBuffer;}
+    public PriorityQueue<Payload> GetReadBuffer() {return readBuffer;}
+    public PriorityQueue<Payload> GetWriteBuffer() {return writeBuffer;}
+    public PriorityQueue<Payload> GetPrewriteBuffer() {return prewriteBuffer;}
 
-    public UniqueTimestamp GetMinR_TS() {
-        if (GetReadBuffer().isEmpty()) return new UniqueTimestamp(Integer.MAX_VALUE,-1);
+    public Timestamp GetMinR_TS() {
+        if (GetReadBuffer().isEmpty()) return new Timestamp(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
         return GetReadBuffer().peek().GetTimestamp();
     }
-    public UniqueTimestamp GetMinW_TS() {
-        if (GetWriteBuffer().isEmpty()) return new UniqueTimestamp(Integer.MAX_VALUE,-1);
+    public Timestamp GetMinW_TS() {
+        if (GetWriteBuffer().isEmpty()) return new Timestamp(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
         return GetWriteBuffer().peek().GetTimestamp();
     }
-    public UniqueTimestamp GetMinP_TS() {
-        if (GetPrewriteBuffer().isEmpty()) return new UniqueTimestamp(Integer.MAX_VALUE,-1);
+    public Timestamp GetMinP_TS() {
+        if (GetPrewriteBuffer().isEmpty()) return new Timestamp(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
         return GetPrewriteBuffer().peek().GetTimestamp();
     }
 
 
-    public TimeBufferedRecord(int value) { this.value=value; }
+    public TimeBufferedRecord(int value) {
+        this.value=value;
+    }
 
 }

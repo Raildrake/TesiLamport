@@ -3,92 +3,22 @@ package lamport.process;
 import lamport.datastore.TimestampedRecord;
 import lamport.payload.Payload;
 import lamport.payload.Request;
-import lamport.payload.TimestampedIDPayload;
-import lamport.timestamps.UniqueTimestamp;
+import lamport.timestamps.Timestamp;
 
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ProcessSimple1PC extends Process<TimestampedIDPayload,UniqueTimestamp> {
+public class ProcessSimple1PC extends TransactionalProcess {
 
     public ProcessSimple1PC(int port) {
-        super(port,UniqueTimestamp.class);
+        super(port);
         GetTimestamp().Set(0,port);
-
+    }
+    @Override
+    void InitData() {
         GetDataStore().Add("A",new TimestampedRecord(2));
         GetDataStore().Add("B",new TimestampedRecord(3));
         GetDataStore().Add("C",new TimestampedRecord(5));
-    }
-
-    protected ReadWriteLock timestampLock=new ReentrantReadWriteLock();
-    protected int failCount=0;
-    protected int successCount=0;
-
-    //TODO: crea superclasse con funzionalità transazionali che supporti diverti tipi di timestamp
-    void SendPayload(UniqueTimestamp transactionTS, Socket s, Request req, String target, int val) {
-        TimestampedIDPayload payload = new TimestampedIDPayload();
-        payload.GetTimestamp().Set(transactionTS, false);
-        payload.SetRequest(req);
-        payload.SetTarget(target);
-        payload.SetArg1(val);
-
-        timestampLock.writeLock().lock();
-        GetTimestamp().Add(1); //Il timestamp della transazione resterà quello per tutte le richieste della transazione, ma il timestamp del processo vogliamo che sia incrementato ad ogni messaggio comunque
-        timestampLock.writeLock().unlock();
-
-        Send(s, payload);
-    }
-
-    boolean ReadRequest(UniqueTimestamp transactionTS, Socket s, String target, TimestampedIDPayload output, LinkedList<TimestampedIDPayload> bufferedReads) {
-        SendPayload(transactionTS,s,Request.READ,target,-1);
-        TimestampedIDPayload res=WaitResponse(s,new Request[]{Request.SUCCESS_READ,Request.FAIL_READ,Request.BUFFERED_READ},target);
-        if (res.GetRequest()==Request.BUFFERED_READ) bufferedReads.add(res);
-        if (output!=null) output.CopyFrom(res);
-
-        return res.GetRequest()!=Request.FAIL_READ;
-    }
-    boolean WriteRequest(UniqueTimestamp transactionTS, Socket s, String target, int value, TimestampedIDPayload output, LinkedList<TimestampedIDPayload> bufferedWrites) {
-        SendPayload(transactionTS,s,Request.WRITE,target,value);
-        TimestampedIDPayload res=WaitResponse(s,new Request[]{Request.SUCCESS_WRITE,Request.FAIL_WRITE,Request.BUFFERED_WRITE},target);
-        if (res.GetRequest()==Request.BUFFERED_WRITE) bufferedWrites.add(res);
-        if (output!=null) output.CopyFrom(res);
-
-        return res.GetRequest()!=Request.FAIL_WRITE;
-    }
-    boolean PrewriteRequest(UniqueTimestamp transactionTS, Socket s, String target, TimestampedIDPayload output, LinkedList<TimestampedIDPayload> bufferedPrewrites) {
-        SendPayload(transactionTS,s,Request.PREWRITE,target,-1);
-        TimestampedIDPayload res=WaitResponse(s,new Request[]{Request.FAIL_PREWRITE,Request.BUFFERED_PREWRITE},target);
-        if (res.GetRequest()==Request.BUFFERED_PREWRITE) bufferedPrewrites.add(res);
-        if (output!=null) output.CopyFrom(res);
-
-        return res.GetRequest()!=Request.FAIL_PREWRITE;
-    }
-
-    boolean ReadCancelRequest(UniqueTimestamp transactionTS, Socket s, String target) {
-        SendPayload(transactionTS,s,Request.READ_CANCEL,target,-1);
-        TimestampedIDPayload res=WaitResponse(s,new Request[]{Request.SUCCESS_READ_CANCEL},target);
-        return res.GetRequest()==Request.SUCCESS_READ_CANCEL;
-    }
-    boolean WriteCancelRequest(UniqueTimestamp transactionTS, Socket s, String target) {
-        SendPayload(transactionTS,s,Request.WRITE_CANCEL,target,-1);
-        TimestampedIDPayload res=WaitResponse(s,new Request[]{Request.SUCCESS_WRITE_CANCEL},target);
-        return res.GetRequest()==Request.SUCCESS_WRITE_CANCEL;
-    }
-    boolean PrewriteCancelRequest(UniqueTimestamp transactionTS, Socket s, String target) {
-        SendPayload(transactionTS,s,Request.PREWRITE_CANCEL,target,-1);
-        TimestampedIDPayload res=WaitResponse(s,new Request[]{Request.SUCCESS_PREWRITE_CANCEL},target);
-        return res.GetRequest()==Request.SUCCESS_PREWRITE_CANCEL;
-    }
-    void WaitBuffer(LinkedList<TimestampedIDPayload> bufferList, Request[] possibleResponses) {
-        while (bufferList.size() > 0) {
-            TimestampedIDPayload buffered=bufferList.get(0);
-            TimestampedIDPayload received = WaitResponse(buffered.GetUsedSocket(),possibleResponses,buffered.GetTarget());
-            buffered.CopyFrom(received);
-            bufferList.remove(buffered);
-        }
     }
 
     @Override
@@ -96,21 +26,22 @@ public class ProcessSimple1PC extends Process<TimestampedIDPayload,UniqueTimesta
         while(true) {
             while(!ExecuteTransaction())
             {
-                failCount++;
-                Log("Transaction failed! ("+successCount+"/"+(successCount+failCount)+")");
+                transactionFailCount++;
+                Log("Transaction failed! ("+transactionSuccessCount+"/"+(transactionSuccessCount+transactionFailCount)+")");
             } //ripeto finchè non riesco
-            successCount++;
-            Log("Transaction completed! ("+successCount+"/"+(successCount+failCount)+")");
+            transactionSuccessCount++;
+            Log("Transaction completed! ("+transactionSuccessCount+"/"+(transactionSuccessCount+transactionFailCount)+")");
         }
     }
 
-    boolean ExecuteTransaction() {
-        timestampLock.readLock().lock();
-        UniqueTimestamp curTimestamp = GetTimestamp().clone();
-        timestampLock.readLock().unlock();
+    @Override
+    boolean OnTransactionExecute(Timestamp curTimestamp,
+                                 LinkedList<Payload> bufferedPrewrites,
+                                 LinkedList<Payload> bufferedReads,
+                                 LinkedList<Payload> bufferedWrites) {
 
-        TimestampedIDPayload plA=new TimestampedIDPayload();
-        TimestampedIDPayload plB=new TimestampedIDPayload();
+        Payload plA=new Payload();
+        Payload plB=new Payload();
 
         if (!ReadRequest(curTimestamp,GetRandomOutSocket(),"A",plA,null)) return false;
         Log("Read A success!");
@@ -126,24 +57,11 @@ public class ProcessSimple1PC extends Process<TimestampedIDPayload,UniqueTimesta
     }
 
     @Override
-    void PayloadReceivedHandler(TimestampedIDPayload payload) {
+    void PayloadReceivedHandler(Payload payload) {
         ProcessRequest(payload.GetUsedSocket(),payload);
     }
 
-    @Override
-    void ProcessTimestamp(UniqueTimestamp timestamp) {
-
-        timestampLock.writeLock().lock();
-
-        UniqueTimestamp newT = UniqueTimestamp.Max(timestamp, GetTimestamp());
-        newT.Add(1);
-        GetTimestamp().Set(newT, true);
-
-        timestampLock.writeLock().unlock();
-
-    }
-
-    void ProcessRequest(Socket s, TimestampedIDPayload payload) {
+    void ProcessRequest(Socket s, Payload payload) {
         //Siccome qui arrivano le richieste sul listen socket, possiamo aspettarci solo read o write
         if (payload.GetRequest()==Request.READ) {
             String n = payload.GetTarget();
@@ -151,7 +69,7 @@ public class ProcessSimple1PC extends Process<TimestampedIDPayload,UniqueTimesta
             TimestampedRecord record = (TimestampedRecord) GetDataStore().GetValue(n);
 
             timestampLock.readLock().lock();
-            UniqueTimestamp ts=GetTimestamp();
+            Timestamp ts=GetTimestamp();
             timestampLock.readLock().unlock();
 
             if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW, abbiamo TS<W-TS
@@ -169,7 +87,7 @@ public class ProcessSimple1PC extends Process<TimestampedIDPayload,UniqueTimesta
             TimestampedRecord record = (TimestampedRecord) GetDataStore().GetValue(n);
 
             timestampLock.readLock().lock();
-            UniqueTimestamp ts=GetTimestamp();
+            Timestamp ts=GetTimestamp();
             timestampLock.readLock().unlock();
 
             if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp()) || record.GetR_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW/WW, abbiamo TS<W-TS oppure TS<R-TS

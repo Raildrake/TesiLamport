@@ -38,8 +38,7 @@ public class Main {
             case "Simple1PC": process=new ProcessSimple1PC(listenPort); break;
             case "Simple2PC": process=new ProcessSimple2PC(listenPort); break;
 
-            case "TestClient": process=new TestProcess(listenPort,true); break;
-            case "TestServer": process=new TestProcess(listenPort,false); break;
+            case "Simple2PCP": process=new ProcessSimple2PC_Priority(listenPort); break;
         }
         process.SetArtificialDelay(minDelay,maxDelay);
         process.Listen();

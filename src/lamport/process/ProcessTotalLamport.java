@@ -1,25 +1,16 @@
 package lamport.process;
 
-import lamport.payload.TimestampedIDPayload;
-import lamport.payload.TimestampedPayload;
-import lamport.payload.TimestampedPayload;
-import lamport.timestamps.UniqueTimestamp;
+import lamport.payload.Payload;
+import lamport.timestamps.Timestamp;
 
-import java.net.Socket;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ProcessTotalLamport extends Process<TimestampedIDPayload,UniqueTimestamp> {
+public class ProcessTotalLamport extends Process {
 
     public ProcessTotalLamport(int port) {
-        super(port,UniqueTimestamp.class);
-        GetTimestamp().Set(0,port);
+        super(port);
+        GetTimestamp().Set(0,port); //ecco, qui invece vogliamo proprio impostarlo manualmente!
     }
-
-    private ReadWriteLock timestampLock=new ReentrantReadWriteLock();
 
     @Override
     void OutputHandler() {
@@ -32,7 +23,7 @@ public class ProcessTotalLamport extends Process<TimestampedIDPayload,UniqueTime
             GetTimestamp().Add(1);
             timestampLock.writeLock().unlock();
 
-            TimestampedIDPayload payload = new TimestampedIDPayload();
+            Payload payload = new Payload();
             payload.GetTimestamp().Set(GetTimestamp(),false);
 
             Send(GetRandomOutSocket(), payload);
@@ -41,12 +32,12 @@ public class ProcessTotalLamport extends Process<TimestampedIDPayload,UniqueTime
     }
 
     @Override
-    void PayloadReceivedHandler(TimestampedIDPayload payload) {
+    void PayloadReceivedHandler(Payload payload) {
 
         timestampLock.writeLock().lock();
 
-        UniqueTimestamp t = payload.GetTimestamp();
-        UniqueTimestamp newT = UniqueTimestamp.Max(t, GetTimestamp());
+        Timestamp t = payload.GetTimestamp();
+        Timestamp newT = Timestamp.Max(t, GetTimestamp());
         newT.Add(1);
         Log("Received packet with timestamp " + payload.GetTimestamp() + ", current timestamp is " + GetTimestamp() + ".");
         GetTimestamp().Set(newT, true);

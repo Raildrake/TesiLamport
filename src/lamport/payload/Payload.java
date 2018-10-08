@@ -1,15 +1,16 @@
 package lamport.payload;
 
-import lamport.timestamps.GenericTimestamp;
+import lamport.timestamps.Timestamp;
 
 import java.io.*;
 import java.net.Socket;
 
-public abstract class Payload<T extends GenericTimestamp> implements Serializable, Timestamped<T> {
+public class Payload implements Serializable {
     private Request request = Request.VOID;
     private String target = "";
     private int arg1 = 0;
     private int host=0;
+    private Timestamp timestamp=new Timestamp();
     private transient Socket usedSocket; //questa non la serializziamo, ci serve solo dopo aver inviato/ricevuto un payload per tenere traccia del socket usato localmente
 
     public Request GetRequest() { return request; }
@@ -27,6 +28,8 @@ public abstract class Payload<T extends GenericTimestamp> implements Serializabl
     public Socket GetUsedSocket() { return usedSocket; }
     public void SetUsedSocket(Socket val) { usedSocket=val; }
 
+    public Timestamp GetTimestamp() { return timestamp; }
+
 
     public void Encode(ObjectOutputStream out) throws IOException {
         out.writeObject(this);
@@ -40,12 +43,13 @@ public abstract class Payload<T extends GenericTimestamp> implements Serializabl
         return res;
     }
 
-    public void CopyFrom(Payload<T> src) {
+    public void CopyFrom(Payload src) {
         SetRequest(src.GetRequest());
         SetTarget(src.GetTarget());
         SetArg1(src.GetArg1());
         SetHost(src.GetHost());
         SetUsedSocket(src.GetUsedSocket());
+        GetTimestamp().Set(src.GetTimestamp());
     }
 
 }

@@ -1,20 +1,18 @@
 package lamport.process;
 
-import lamport.payload.TimestampedPayload;
-import lamport.timestamps.SimpleTimestamp;
+import lamport.payload.Payload;
+import lamport.timestamps.Timestamp;
 
 import java.net.Socket;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ProcessPartialLamport extends Process<TimestampedPayload, SimpleTimestamp> {
+public class ProcessPartialLamport extends Process {
 
     public ProcessPartialLamport(int port) {
-        super(port,SimpleTimestamp.class);
+        super(port);
     }
-
-    private ReadWriteLock timestampLock=new ReentrantReadWriteLock();
 
     @Override
     void OutputHandler() {
@@ -27,7 +25,7 @@ public class ProcessPartialLamport extends Process<TimestampedPayload, SimpleTim
             GetTimestamp().Add(1);
             timestampLock.writeLock().unlock();
 
-            TimestampedPayload payload = new TimestampedPayload();
+            Payload payload = new Payload();
             payload.GetTimestamp().Set(GetTimestamp());
 
             Send(GetRandomOutSocket(), payload);
@@ -36,12 +34,12 @@ public class ProcessPartialLamport extends Process<TimestampedPayload, SimpleTim
     }
 
     @Override
-    void PayloadReceivedHandler(TimestampedPayload payload) {
+    void PayloadReceivedHandler(Payload payload) {
 
         timestampLock.writeLock().lock();
 
-        SimpleTimestamp t = payload.GetTimestamp();
-        SimpleTimestamp newT = SimpleTimestamp.Max(t, GetTimestamp());
+        Timestamp t = payload.GetTimestamp();
+        Timestamp newT = Timestamp.Max(t, GetTimestamp());
         newT.Add(1);
 
         Log("Received packet with timestamp " + t + ", current timestamp is " + GetTimestamp() + ".");

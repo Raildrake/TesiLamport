@@ -1,19 +1,13 @@
 package lamport.process;
 
-import lamport.payload.TimestampedPayload;
-import lamport.payload.TimestampedPayload;
-import lamport.timestamps.SimpleTimestamp;
+import lamport.payload.Payload;
+import lamport.timestamps.Timestamp;
 
-import java.net.Socket;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-public class ProcessNoSync extends Process<TimestampedPayload,SimpleTimestamp> {
+public class ProcessNoSync extends Process {
 
-    public ProcessNoSync(int port) { super(port, SimpleTimestamp.class); }
-
-    private Lock lockTimestamp=new ReentrantLock(); //l'accesso a timestamp deve essere gestito da un lock unico per evitare conflitti di concorrenza
+    public ProcessNoSync(int port) { super(port); }
 
     @Override
     void OutputHandler() {
@@ -26,7 +20,7 @@ public class ProcessNoSync extends Process<TimestampedPayload,SimpleTimestamp> {
                 GetTimestamp().Add(1);
             }
 
-            TimestampedPayload payload = new TimestampedPayload();
+            Payload payload = new Payload();
             payload.GetTimestamp().Set(GetTimestamp());
 
             Send(GetRandomOutSocket(), payload);
@@ -35,14 +29,14 @@ public class ProcessNoSync extends Process<TimestampedPayload,SimpleTimestamp> {
     }
 
     @Override
-    void PayloadReceivedHandler(TimestampedPayload payload) {
+    void PayloadReceivedHandler(Payload payload) {
 
-        lockTimestamp.lock();
+        timestampLock.readLock().lock();
 
-        SimpleTimestamp t=payload.GetTimestamp();
+        Timestamp t=payload.GetTimestamp();
         Log("Received packet with timestamp "+t+", current timestamp is "+GetTimestamp()+".");
 
-        lockTimestamp.unlock();
+        timestampLock.readLock().unlock();
 
     }
 

@@ -1,0 +1,15 @@
+Balanced normal
+20000 trans - 99.330-99.370
+
+Balanced priority
+20000 trans - 99.350-99.410
+20000 trans - 99.470-99.495
+30000 trans - 99.277/99.493/99.500
+
+Unbalanced priority
+2000 trans - U93.800/98.530/97.660
+
+Unbalanced normal
+2500 trans - U92.380/98.210/98.294
+
+Delayed normal

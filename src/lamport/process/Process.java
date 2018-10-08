@@ -3,19 +3,18 @@ package lamport.process;
 import lamport.datastore.DataStore;
 import lamport.payload.Payload;
 import lamport.payload.Request;
-import lamport.payload.TimestampedIDPayload;
-import lamport.timestamps.GenericTimestamp;
-import lamport.timestamps.UniqueTimestamp;
+import lamport.timestamps.Timestamp;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 
-public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> {
+public abstract class Process {
 
     private int port;
     private int artificialDelayMin=0; //introduciamo un ritardo artificiale nella rete per amplificare gli effetti dell'accesso concorrente
@@ -28,21 +27,20 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
     private DataStore dataStore=new DataStore();
 
     private List<Socket> outSockets=new LinkedList<>();
-    private List<T> responseQueue=new LinkedList<>();
+    private List<Payload> responseQueue=new LinkedList<>();
     private HashMap<Socket,Thread> inConnections=new HashMap<>();
     private HashMap<Socket,Thread> outSocketReaders=new HashMap<>();
 
     private HashMap<Socket,ObjectInputStream> socketOIS=new HashMap<>();
     private HashMap<Socket,ObjectOutputStream> socketOOS=new HashMap<>();
 
-    private Z timestamp;
+    private Timestamp timestamp=new Timestamp();
+    protected ReadWriteLock timestampLock=new ReentrantReadWriteLock();
 
 
-    public Process(int port, Class<Z> timeClass) {
+    public Process(int port) {
         this.port=port;
-        try {
-            this.timestamp = timeClass.newInstance();
-        } catch (Exception e) { }
+        //Importante notare che non inizializzo i valori del timestamp, non è detto che voglia usarli tutti!
     }
     public void Start() {
         outThread=new Thread(()->OutputHandler());
@@ -61,8 +59,10 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
         return socks.get(ThreadLocalRandom.current().nextInt(0,socks.size()));
     }
     protected boolean IsDebug() { return debug; }
+    protected int GetArtificialDelayMin() { return artificialDelayMin; }
+    protected int GetArtificialDelayMax() { return artificialDelayMax; }
 
-    protected Z GetTimestamp() { return timestamp; }
+    protected Timestamp GetTimestamp() { return timestamp; }
 
     public boolean Connect(String host, int port) {
         Log("Attempting to connect to " + host + ":" + port + "...");
@@ -112,7 +112,8 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
 
     public void Send(Socket s, Payload p) {
         try {
-            //Thread.sleep(ThreadLocalRandom.current().nextInt(artificialDelayMin, artificialDelayMax));
+            /*if (GetArtificialDelayMax() > 0 && GetArtificialDelayMin() > 0)
+                Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialDelayMin(), GetArtificialDelayMax()));*/
 
             p.SetHost(GetPort());
             p.SetUsedSocket(s);
@@ -120,18 +121,20 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
             synchronized (s.getOutputStream()) {
                 p.Encode(socketOOS.get(s));
             }
+            OnPayloadSent(p);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private T Receive(Socket s) {
+    private Payload Receive(Socket s) {
         try {
-            //Thread.sleep(ThreadLocalRandom.current().nextInt(artificialDelayMin, artificialDelayMax));
+            /*if (GetArtificialDelayMax() > 0 && GetArtificialDelayMin() > 0)
+                Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialDelayMin(), GetArtificialDelayMax()));*/
 
-            T res;
+            Payload res;
             synchronized (s.getInputStream()) {
-                res = T.Decode(socketOIS.get(s));
+                res = Payload.Decode(socketOIS.get(s));
             }
             res.SetUsedSocket(s);
             return res;
@@ -143,7 +146,7 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
 
     void ResponseSocketReader(Socket s) {
         while(true) {
-            T payload=Receive(s);
+            Payload payload=Receive(s);
             if (payload!=null) {
                 responseQueue.add(payload);
                 ProcessTimestamp(payload.GetTimestamp());
@@ -153,20 +156,25 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
     abstract void OutputHandler();
     void InputSocketHandler(Socket s) {
         while(true) {
-            T payload=Receive(s);
+            Payload payload=Receive(s);
             if (payload!=null) {
                 PayloadReceivedHandler(payload);
                 ProcessTimestamp(payload.GetTimestamp());
             }
         }
     }
-    abstract void PayloadReceivedHandler(T payload);
+    abstract void PayloadReceivedHandler(Payload payload);
 
-    void ProcessTimestamp(Z timestamp) {
+    void ProcessTimestamp(Timestamp timestamp) {
         //comportamento default ignora totalmente l'aggiornamento del timestamp
     }
+    void OnPayloadSent(Payload p) {
+        timestampLock.writeLock().lock();
+        GetTimestamp().Add(1); //Il timestamp della transazione resterà quello per tutte le richieste della transazione, ma il timestamp del processo vogliamo che sia incrementato ad ogni messaggio comunque
+        timestampLock.writeLock().unlock();
+    }
 
-    T WaitResponse(Predicate<T> criteria) {
+    Payload WaitResponse(Predicate<Payload> criteria) {
         while(true) {
             try {
                 for (int k=0;k<responseQueue.size();k++) {
@@ -179,18 +187,15 @@ public abstract class Process<T extends Payload<Z>, Z extends GenericTimestamp> 
             } catch (Exception e) { e.printStackTrace(); }
         }
     }
-    T WaitResponse(Socket fromSocket, Request[] possibleResponses, String target) {
+    Payload WaitResponse(Socket fromSocket, Request[] possibleResponses, String target) {
         return WaitResponse(p->(p.GetUsedSocket().equals(fromSocket) && Arrays.asList(possibleResponses).contains(p.GetRequest()) && p.GetTarget().equals(target)));
     }
 
 
     protected void Log(Object msg) {
-        System.out.println(CurTime()+" HOST"+this.GetPort()+": "+msg);
+        System.out.println(GetTimestamp().toString()+" HOST"+this.GetPort()+": "+msg);
     }
     protected void Debug(Object msg) {
         if (IsDebug()) Log(msg);
-    }
-    protected String CurTime() {
-        return "["+(new Date()).toString()+"]";
     }
 }
