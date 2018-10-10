@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 public class Timestamp implements Serializable {
 
+    public final static Timestamp MAX_VALUE=new Timestamp(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
+    public final static Timestamp MIN_VALUE=new Timestamp(Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE);
+
     private int t=0;
     private int uid=-1; //di default a -1 per consistenza
     private int priority=-1;
@@ -53,13 +56,13 @@ public class Timestamp implements Serializable {
     }
 
     public boolean IsGreaterThan(Timestamp t2) {
-        return priority>t2.priority ||
+        /*return priority>t2.priority ||
                 (priority==t2.priority && t>t2.t) ||
-                (t==t2.t && priority==t2.priority && uid>t2.uid);
-
-        /*return t>t2.t ||
-                (t==t2.t && priority>t2.priority) ||
                 (t==t2.t && priority==t2.priority && uid>t2.uid);*/
+
+        return t>t2.t ||
+                (t==t2.t && priority>t2.priority) ||
+                (t==t2.t && priority==t2.priority && uid>t2.uid);
     }
     public boolean IsEqualTo(Timestamp t2) { return t==t2.t && priority==t2.priority && uid==t2.uid; }
 

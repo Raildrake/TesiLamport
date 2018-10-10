@@ -1,5 +1,6 @@
 package lamport.process;
 
+import lamport.StatCollector;
 import lamport.datastore.DataStore;
 import lamport.payload.Payload;
 import lamport.payload.Request;
@@ -17,8 +18,10 @@ import java.util.function.Predicate;
 public abstract class Process {
 
     private int port;
-    private int artificialDelayMin=0; //introduciamo un ritardo artificiale nella rete per amplificare gli effetti dell'accesso concorrente
+    private int artificialDelayMin=0; //introduciamo un ritardo artificiale nell'esecuzione di transazioni
     private int artificialDelayMax=0;
+    private int artificialLagMin=0; //introduciamo un ritardo artificiale nella rete per amplificare gli effetti dell'accesso concorrente
+    private int artificialLagMax=0;
     private Thread listenThread;
     private Thread outThread;
 
@@ -36,6 +39,7 @@ public abstract class Process {
 
     private Timestamp timestamp=new Timestamp();
     protected ReadWriteLock timestampLock=new ReentrantReadWriteLock();
+    private StatCollector statCollector=new StatCollector();
 
 
     public Process(int port) {
@@ -51,6 +55,10 @@ public abstract class Process {
         artificialDelayMin=min;
         artificialDelayMax=max;
     }
+    public void SetArtificialLag(int min, int max) {
+        artificialLagMin=min;
+        artificialLagMax=max;
+    }
     public int GetPort() { return port; }
     public DataStore GetDataStore() { return dataStore; }
     protected List<Socket> GetOutSockets() { return outSockets; }
@@ -61,6 +69,9 @@ public abstract class Process {
     protected boolean IsDebug() { return debug; }
     protected int GetArtificialDelayMin() { return artificialDelayMin; }
     protected int GetArtificialDelayMax() { return artificialDelayMax; }
+    protected int GetArtificialLagMin() { return artificialLagMin; }
+    protected int GetArtificialLagMax() { return artificialLagMax; }
+    protected StatCollector GetStatCollector() { return statCollector; }
 
     protected Timestamp GetTimestamp() { return timestamp; }
 
@@ -112,8 +123,8 @@ public abstract class Process {
 
     public void Send(Socket s, Payload p) {
         try {
-            /*if (GetArtificialDelayMax() > 0 && GetArtificialDelayMin() > 0)
-                Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialDelayMin(), GetArtificialDelayMax()));*/
+            if (GetArtificialLagMax() > 0 && GetArtificialLagMin() > 0)
+                Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialLagMin(), GetArtificialLagMax()));
 
             p.SetHost(GetPort());
             p.SetUsedSocket(s);
@@ -129,8 +140,8 @@ public abstract class Process {
     }
     private Payload Receive(Socket s) {
         try {
-            /*if (GetArtificialDelayMax() > 0 && GetArtificialDelayMin() > 0)
-                Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialDelayMin(), GetArtificialDelayMax()));*/
+            if (GetArtificialLagMax() > 0 && GetArtificialLagMin() > 0)
+                Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialLagMin(), GetArtificialLagMax()));
 
             Payload res;
             synchronized (s.getInputStream()) {

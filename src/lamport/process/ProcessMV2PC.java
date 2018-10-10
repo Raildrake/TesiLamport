@@ -1,24 +1,23 @@
 package lamport.process;
 
-import lamport.datastore.TimeBufferedRecord;
+import lamport.datastore.MultiVersionBufferedRecord;
 import lamport.payload.Payload;
 import lamport.payload.Request;
 import lamport.timestamps.Timestamp;
 
 import java.util.LinkedList;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class ProcessSimple2PC extends TransactionalProcess {
+public class ProcessMV2PC extends TransactionalProcess {
 
-    public ProcessSimple2PC(int port) {
+    public ProcessMV2PC(int port) {
         super(port);
         GetTimestamp().Set(0,port);
     }
     @Override
     void InitData() {
-        GetDataStore().Add("A", new TimeBufferedRecord(2));
-        GetDataStore().Add("B", new TimeBufferedRecord(3));
-        GetDataStore().Add("C", new TimeBufferedRecord(5));
+        GetDataStore().Add("A", new MultiVersionBufferedRecord(2));
+        GetDataStore().Add("B", new MultiVersionBufferedRecord(3));
+        GetDataStore().Add("C", new MultiVersionBufferedRecord(5));
     }
 
     @Override
@@ -96,89 +95,71 @@ public class ProcessSimple2PC extends TransactionalProcess {
             Timestamp curTS = GetTimestamp();
             timestampLock.readLock().unlock();
 
-            TimeBufferedRecord record = (TimeBufferedRecord) GetDataStore().GetValue(n);
+            MultiVersionBufferedRecord record = (MultiVersionBufferedRecord) GetDataStore().GetValue(n);
 
             if (payload.GetRequest() == Request.READ) {
                 Debug("Received READ request for " + n + " with timestamp " + payload.GetTimestamp()+ " from "+payload.GetUsedSocket().getRemoteSocketAddress());
 
-                if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW, abbiamo TS<W-TS
-                    SendPayload(curTS, payload.GetUsedSocket(), Request.FAIL_READ, payload.GetTarget(), -1);
-                    Debug("Rejected READ request for " + n + " with timestamp " + payload.GetTimestamp());
-                } else if (payload.GetTimestamp().IsGreaterThan(record.GetMinP_TS())) { //TS>min-P-ts
+                if (record.FallsInPrewriteInterval(payload.GetTimestamp())) {
                     if (!buffered) {
-                        Debug("Buffered, min-P-ts=" + record.GetMinP_TS());
+                        Debug("Buffered READ for "+ n +".");
                         record.GetReadBuffer().add(payload);
                         SendPayload(curTS, payload.GetUsedSocket(), Request.BUFFERED_READ, payload.GetTarget(), -1);
                     }
                 } else {
-                    SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_READ, payload.GetTarget(), record.GetValue());
-                    record.SetR_TS(payload.GetTimestamp());
+                    record.GetReadBuffer().remove(payload);
+                    record.Read(payload.GetTimestamp());
+                    SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_READ, payload.GetTarget(), record.GetOldestVersionBefore(payload.GetTimestamp()));
 
-                    record.GetReadBuffer().remove(payload); //se l'abbiamo letto dal buffer, va rimosso
-                    Debug("Executed, min-R-ts=" + record.GetMinR_TS());
                     GetDataStore().Unlock(n);
-                    if (!record.GetWriteBuffer().isEmpty()) ProcessRequest(record.GetWriteBuffer().peek(), true); //controlliamo se adesso è possibile soddisfare qualche write
-                    if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true); //oppure altri read
+                    if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true); //potremmo aver sbloccato qualche richiesta di read ora
                 }
 
             } else if (payload.GetRequest() == Request.PREWRITE) {
                 Debug("Received PREWRITE request for " + n + " with timestamp " + payload.GetTimestamp()+ " from "+payload.GetUsedSocket().getRemoteSocketAddress());
 
-                if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp()) || record.GetR_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW/WW, abbiamo TS<W-TS oppure TS<R-TS
+                Timestamp tEnd=record.GetFirstWriteAfter(payload.GetTimestamp());
+                if (record.HasReadInInterval(payload.GetTimestamp(),tEnd)) {
                     SendPayload(curTS, payload.GetUsedSocket(), Request.FAIL_PREWRITE, payload.GetTarget(), -1);
-                    Debug("Rejected PREWRITE request for " + n + " with timestamp " + payload.GetTimestamp());
                 } else {
                     if (!buffered) {
-                        SendPayload(curTS, payload.GetUsedSocket(), Request.BUFFERED_PREWRITE, payload.GetTarget(), payload.GetArg1());
+                        Debug("Buffered PREWRITE for "+ n +".");
                         record.GetPrewriteBuffer().add(payload);
-                        Debug("Buffered, new min-P-ts=" + record.GetMinP_TS());
+                        SendPayload(curTS, payload.GetUsedSocket(), Request.BUFFERED_PREWRITE, payload.GetTarget(), -1);
                     }
                 }
 
             } else if (payload.GetRequest() == Request.WRITE) {
                 Debug("Received WRITE request for " + n + " with timestamp " + payload.GetTimestamp()+ " from "+payload.GetUsedSocket().getRemoteSocketAddress());
 
-                if (payload.GetTimestamp().IsGreaterThan(record.GetMinR_TS()) || payload.GetTimestamp().IsGreaterThan(record.GetMinP_TS())) { //write non viene mai rifiutato, ma se TS>min-R-ts o TS>min-P-ts lo mettiamo in buffer
-                    if (!buffered) {
-                        Debug("Buffered, min-R-ts=" + record.GetMinR_TS() + " and min-P-ts=" + record.GetMinP_TS());
-                        SendPayload(curTS, payload.GetUsedSocket(), Request.BUFFERED_WRITE, payload.GetTarget(), -1);
-                        record.GetWriteBuffer().add(payload);
-                    }
-                } else {
-                    SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_WRITE, payload.GetTarget(), payload.GetArg1());
-                    record.SetValue(payload.GetArg1());
-                    record.SetW_TS(payload.GetTimestamp());
-                    record.GetWriteBuffer().remove(payload); //se l'abbiamo letto dal buffer, va rimosso
-                    record.GetPrewriteBuffer().removeIf((Payload p) -> (p.GetTarget().equals(payload.GetTarget()) && p.GetUsedSocket() == payload.GetUsedSocket())); //rimuovo prewrite associati con questo write
-                    Debug("Executed, min-W-ts=" + record.GetMinW_TS() + ", min-P-ts=" + record.GetMinP_TS());
-                    GetDataStore().Unlock(n);
-                    if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true); //potremmo aver sbloccato qualche richiesta di read ora
-                    if (!record.GetWriteBuffer().isEmpty()) ProcessRequest(record.GetWriteBuffer().peek(), true); //oppure di scrittura siccome dipendono da min-P-ts
-                }
+                record.Write(payload.GetArg1(),payload.GetTimestamp());
+                record.GetPrewriteBuffer().removeIf((Payload p) -> (p.GetTarget().equals(payload.GetTarget()) && p.GetUsedSocket() == payload.GetUsedSocket())); //rimuovo prewrite associati con questo write
+                SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_WRITE, payload.GetTarget(), -1);
 
-            } else if (payload.GetRequest() == Request.READ_CANCEL) {
+                GetDataStore().Unlock(n);
+                if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true);
+
+            }
+            else if (payload.GetRequest() == Request.READ_CANCEL) {
                 Debug("Received READ_CANCEL for "+ n + " with timestamp " + payload.GetTimestamp());
                 record.GetReadBuffer().removeIf((Payload p)->(p.GetHost()==payload.GetHost() && payload.GetTimestamp().IsEqualTo(p.GetTimestamp())));
                 SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_READ_CANCEL, payload.GetTarget(), -1);
 
                 GetDataStore().Unlock(n);
-                if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true); //potremmo aver sbloccato qualche richiesta di read ora
-                if (!record.GetWriteBuffer().isEmpty()) ProcessRequest(record.GetWriteBuffer().peek(), true); //oppure di scrittura siccome dipendono da min-P-ts
-            } else if (payload.GetRequest() == Request.WRITE_CANCEL) {
-                Debug("Received WRITE_CANCEL for "+ n + " with timestamp " + payload.GetTimestamp());
-                record.GetWriteBuffer().removeIf((Payload p)->(p.GetHost()==payload.GetHost() && payload.GetTimestamp().IsEqualTo(p.GetTimestamp())));
-                SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_WRITE_CANCEL, payload.GetTarget(), -1);
+                if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true);
+
             } else if (payload.GetRequest() == Request.PREWRITE_CANCEL) {
                 Debug("Received PREWRITE_CANCEL for "+ n + " with timestamp " + payload.GetTimestamp());
                 record.GetPrewriteBuffer().removeIf((Payload p)->(p.GetHost()==payload.GetHost() && payload.GetTimestamp().IsEqualTo(p.GetTimestamp())));
                 SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_PREWRITE_CANCEL, payload.GetTarget(), -1);
 
                 GetDataStore().Unlock(n);
-                if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true); //potremmo aver sbloccato qualche richiesta di read ora
-                if (!record.GetWriteBuffer().isEmpty()) ProcessRequest(record.GetWriteBuffer().peek(), true); //oppure di scrittura siccome dipendono da min-P-ts
+                if (!record.GetReadBuffer().isEmpty()) ProcessRequest(record.GetReadBuffer().peek(), true);
+
             }
         } finally {
             GetDataStore().Unlock(n);
         }
     }
+
 }

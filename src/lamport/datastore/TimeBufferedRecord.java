@@ -5,27 +5,14 @@ import lamport.timestamps.Timestamp;
 
 import java.util.PriorityQueue;
 
-public class TimeBufferedRecord {
-
-    private int value;
-    private Timestamp w_ts=new Timestamp(-1,-1,-1);
-    private Timestamp r_ts=new Timestamp(-1,-1,-1);
+public class TimeBufferedRecord extends TimestampedRecord {
 
     private PriorityQueue<Payload> readBuffer=
-            new PriorityQueue<>((Payload p1, Payload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
+            new PriorityQueue<>((p1, p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
     private PriorityQueue<Payload> writeBuffer=
-            new PriorityQueue<>((Payload p1, Payload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
+            new PriorityQueue<>((p1, p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
     private PriorityQueue<Payload> prewriteBuffer=
-            new PriorityQueue<>((Payload p1, Payload p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
-
-    public int GetValue() { return value; }
-    public void SetValue(int v) { value=v; }
-
-    public Timestamp GetW_TS() { return w_ts; }
-    public void SetW_TS(Timestamp v) { w_ts=v; }
-
-    public Timestamp GetR_TS() { return r_ts; }
-    public void SetR_TS(Timestamp v) { r_ts=v; }
+            new PriorityQueue<>((p1, p2)->(p1.GetTimestamp().IsGreaterThan(p2.GetTimestamp())?1:0));
 
     public PriorityQueue<Payload> GetReadBuffer() {return readBuffer;}
     public PriorityQueue<Payload> GetWriteBuffer() {return writeBuffer;}
@@ -44,9 +31,8 @@ public class TimeBufferedRecord {
         return GetPrewriteBuffer().peek().GetTimestamp();
     }
 
-
     public TimeBufferedRecord(int value) {
-        this.value=value;
+        super(value);
     }
 
 }

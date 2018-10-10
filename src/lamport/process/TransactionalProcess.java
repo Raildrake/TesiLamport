@@ -5,11 +5,8 @@ import lamport.payload.Request;
 import lamport.timestamps.Timestamp;
 
 import java.net.Socket;
-import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class TransactionalProcess extends Process {
 
@@ -18,9 +15,6 @@ public abstract class TransactionalProcess extends Process {
         InitData();
     }
     abstract void InitData();
-
-    protected int transactionFailCount=0;
-    protected int transactionSuccessCount=0;
 
     void SendPayload(Timestamp transactionTS, Socket s, Request req, String target, int val) {
         Payload payload = new Payload();
@@ -136,12 +130,5 @@ public abstract class TransactionalProcess extends Process {
 
         timestampLock.writeLock().unlock();
 
-    }
-
-    protected String GetSuccessPercentString() {
-        return new DecimalFormat("##.000").format(GetSuccessPercent());
-    }
-    protected double GetSuccessPercent() {
-        return ((double)transactionSuccessCount/(double)(transactionSuccessCount+transactionFailCount))*100.0;
     }
 }

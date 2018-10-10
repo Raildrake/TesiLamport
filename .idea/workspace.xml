@@ -2,46 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ed94e87-771b-4fe4-9619-9f07e5208fce" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lamport/timestamps/Timestamp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lamport/StatCollector.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lamport/datastore/MultiVersionBufferedRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lamport/datastore/MultiVersionRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lamport/process/ProcessMV1PC.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lamport/process/ProcessMV2PC.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lamport/process/ProcessMV2PC_Priority.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/boot/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/boot/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/datastore/TimeBufferedRecord.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/datastore/TimeBufferedRecord.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/datastore/TimestampedRecord.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/datastore/TimestampedRecord.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/payload/Payload.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/payload/Payload.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/payload/Timestamped.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/payload/TimestampedIDPayload.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/payload/TimestampedPayload.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/Process.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/Process.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessNoSync.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessNoSync.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessPartialLamport.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessPartialLamport.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessSimple1PC.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessSimple1PC.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessSimple2PC.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessSimple2PC.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessTotalLamport.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessTotalLamport.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/TestProcess.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/timestamps/GenericTimestamp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/timestamps/SimpleTimestamp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/timestamps/UniqueTimestamp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessSimple2PC_Priority.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/ProcessSimple2PC_Priority.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/TransactionalProcess.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/process/TransactionalProcess.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/lamport/timestamps/Timestamp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/lamport/timestamps/Timestamp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/simple1pc.bat" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/simple1pc.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/simple2pc.bat" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/simple2pc.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/test.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/simple2pc_balanced.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/simple2pc_priority.bat" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/TesiLamport/simple2pc_priority.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/TesiLamport/simple2pc_priority_balanced.bat" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lamport/boot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/boot/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lamport/datastore/TimeBufferedRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/datastore/TimeBufferedRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/datastore/TimestampedRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/datastore/TimestampedRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/payload/Payload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/payload/Payload.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/payload/Timestamped.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/payload/TimestampedIDPayload.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/payload/TimestampedPayload.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lamport/process/Process.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/Process.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/process/ProcessNoSync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/ProcessNoSync.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/process/ProcessPartialLamport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/ProcessPartialLamport.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/process/ProcessTotalLamport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/ProcessTotalLamport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/process/TestProcess.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/timestamps/GenericTimestamp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/timestamps/SimpleTimestamp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lamport/timestamps/UniqueTimestamp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lamport/timestamps/Timestamp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lamport/timestamps/Timestamp.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -53,20 +41,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ProcessSimple1PC.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="901">
-              <caret line="61" column="5" selection-start-line="61" selection-start-column="5" selection-end-line="61" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lamport/boot/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
+            <state relative-caret-position="629">
+              <caret line="47" column="9" lean-forward="true" selection-start-line="47" selection-start-column="9" selection-end-line="47" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -74,67 +53,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Payload.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lamport/payload/Payload.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="49" column="31" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Process.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Process.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lamport/process/Process.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="46" column="26" lean-forward="true" selection-start-line="46" selection-start-column="26" selection-end-line="46" selection-end-column="26" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#SetArtificialDelay#0;class#Process#0" />
-                <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-                <element signature="method#Connect#0;class#Process#0" />
-                <element signature="method#Listen#0;class#Process#0" />
-                <element signature="method#Send#0;class#Process#0" />
-                <element signature="method#Receive#0;class#Process#0" />
-                <element signature="method#ResponseSocketReader#0;class#Process#0" />
-                <element signature="method#InputSocketHandler#0;class#Process#0" />
-                <element signature="method#ProcessTimestamp#0;class#Process#0" />
-                <element signature="method#WaitResponse#0;class#Process#0" />
-                <element signature="method#WaitResponse#1;class#Process#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TransactionalProcess.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1479">
-              <caret line="127" selection-start-line="127" selection-end-line="138" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#ReadRequest#0;class#TransactionalProcess#0" />
-                <element signature="method#WriteRequest#0;class#TransactionalProcess#0" />
-                <element signature="method#PrewriteRequest#0;class#TransactionalProcess#0" />
-                <element signature="method#ReadCancelRequest#0;class#TransactionalProcess#0" />
-                <element signature="method#WriteCancelRequest#0;class#TransactionalProcess#0" />
-                <element signature="method#PrewriteCancelRequest#0;class#TransactionalProcess#0" />
-                <element signature="method#WaitBuffer#0;class#TransactionalProcess#0" />
-                <element signature="e#6382#6383#0" expanded="true" />
-                <element signature="e#6460#6461#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProcessSimple2PC_Priority.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
+            <state relative-caret-position="-1139">
+              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -142,16 +65,37 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Timestamp.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lamport/timestamps/Timestamp.java">
+      <file leaf-file-name="ProcessMV2PC.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessMV2PC.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="935">
-              <caret line="61" column="67" selection-start-line="61" selection-start-column="67" selection-end-line="61" selection-end-column="67" />
+            <state relative-caret-position="183">
+              <caret line="120" column="81" selection-start-line="120" selection-start-column="81" selection-end-line="120" selection-end-column="81" />
               <folding>
-                <element signature="e#1192#1193#0" expanded="true" />
-                <element signature="e#1230#1231#0" expanded="true" />
-                <element signature="e#1374#1375#0" expanded="true" />
-                <element signature="e#1410#1411#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MultiVersionRecord.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lamport/datastore/MultiVersionRecord.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="30" column="5" lean-forward="true" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MultiVersionBufferedRecord.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lamport/datastore/MultiVersionBufferedRecord.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="18" column="42" lean-forward="true" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -194,14 +138,20 @@
         <option value="$PROJECT_DIR$/src/lamport/process/ProcessPartialLamport.java" />
         <option value="$PROJECT_DIR$/src/lamport/process/ProcessNoSync.java" />
         <option value="$PROJECT_DIR$/src/lamport/payload/Payload.java" />
-        <option value="$PROJECT_DIR$/src/lamport/boot/Main.java" />
-        <option value="$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java" />
+        <option value="$PROJECT_DIR$/src/lamport/StatCollector.java" />
         <option value="$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java" />
         <option value="$PROJECT_DIR$/src/lamport/datastore/TimeBufferedRecord.java" />
-        <option value="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC.java" />
         <option value="$PROJECT_DIR$/src/lamport/timestamps/Timestamp.java" />
+        <option value="$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java" />
+        <option value="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC.java" />
         <option value="$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java" />
         <option value="$PROJECT_DIR$/src/lamport/process/Process.java" />
+        <option value="$PROJECT_DIR$/src/lamport/process/ProcessMV1PC.java" />
+        <option value="$PROJECT_DIR$/src/lamport/boot/Main.java" />
+        <option value="$PROJECT_DIR$/src/lamport/process/ProcessMV2PC_Priority.java" />
+        <option value="$PROJECT_DIR$/src/lamport/datastore/MultiVersionRecord.java" />
+        <option value="$PROJECT_DIR$/src/lamport/datastore/MultiVersionBufferedRecord.java" />
+        <option value="$PROJECT_DIR$/src/lamport/process/ProcessMV2PC.java" />
       </list>
     </option>
   </component>
@@ -216,8 +166,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -275,6 +223,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -386,13 +336,14 @@
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.32930845" />
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32930845" />
       <window_info anchor="right" id="Maven Projects" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32930845" />
       <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32930845" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Designer" order="3" />
@@ -401,41 +352,40 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="4" />
       <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39956093" />
       <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39956093" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.32930845" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.32930845" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32930845" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17559524" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32930845" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32930845" />
+      <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.32930845" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39956093" />
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32930845" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info id="Capture Tool" order="5" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info active="true" anchor="bottom" id="Messages" order="10" visible="true" weight="0.32930845" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.32930845" />
       <window_info anchor="right" id="Maven Projects" order="7" />
       <window_info id="Favorites" order="6" side_tool="true" />
     </layout-to-restore>
@@ -449,59 +399,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimpleCommit.java" />
-    <entry file="file://$PROJECT_DIR$/src/lamport/boot/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/Process.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessPartialLamport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/payload/TimestampedIDPayload.java" />
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessTotalLamport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lamport/boot/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
@@ -518,17 +415,6 @@
           <caret line="28" column="34" lean-forward="true" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
           </folding>
         </state>
       </provider>
@@ -537,9 +423,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
           <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -567,17 +450,6 @@
           <caret line="64" column="34" lean-forward="true" selection-start-line="64" selection-start-column="34" selection-end-line="64" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
           </folding>
         </state>
       </provider>
@@ -586,9 +458,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
           <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -618,17 +487,6 @@
           <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
           </folding>
         </state>
       </provider>
@@ -646,17 +504,6 @@
           <caret line="12" column="5" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
           </folding>
         </state>
       </provider>
@@ -674,17 +521,6 @@
           <caret line="12" column="5" lean-forward="true" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
           </folding>
         </state>
       </provider>
@@ -712,14 +548,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="376">
           <caret line="75" column="32" selection-start-line="75" selection-start-column="32" selection-end-line="75" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#DataOutput#0;class#DataStore#0" />
-            <element signature="method#DataOutput#1;class#DataOutput#0;class#DataStore#0" />
-            <element signature="class#LockedObject#0;class#DataStore#0" />
-            <element signature="method#GetValue#0;class#DataStore#0" />
-            <element signature="method#Lock#0;class#DataStore#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -738,13 +566,6 @@
     <entry file="file://$PROJECT_DIR$/src/lamport/timestamps/GenericTimestamp.java" />
     <entry file="file://$PROJECT_DIR$/src/lamport/timestamps/SimpleTimestamp.java" />
     <entry file="file://$PROJECT_DIR$/src/lamport/payload/Timestamped.java" />
-    <entry file="file://$PROJECT_DIR$/src/lamport/datastore/TimestampedRecord.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessNoSync.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -756,96 +577,50 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="138">
           <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/boot/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="901">
-          <caret line="61" column="5" selection-start-line="61" selection-start-column="5" selection-end-line="61" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lamport/payload/Payload.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="782">
-          <caret line="49" column="31" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
+        <state relative-caret-position="374">
+          <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/datastore/TimeBufferedRecord.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="557">
-          <caret line="40" column="5" lean-forward="true" selection-start-line="40" selection-start-column="5" selection-end-line="40" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1946#1947#0" expanded="true" />
-            <element signature="e#1978#1979#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="17" column="21" lean-forward="true" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3721#3722#0" expanded="true" />
-            <element signature="e#3766#3767#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1479">
-          <caret line="127" selection-start-line="127" selection-end-line="138" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#ReadRequest#0;class#TransactionalProcess#0" />
-            <element signature="method#WriteRequest#0;class#TransactionalProcess#0" />
-            <element signature="method#PrewriteRequest#0;class#TransactionalProcess#0" />
-            <element signature="method#ReadCancelRequest#0;class#TransactionalProcess#0" />
-            <element signature="method#WriteCancelRequest#0;class#TransactionalProcess#0" />
-            <element signature="method#PrewriteCancelRequest#0;class#TransactionalProcess#0" />
-            <element signature="method#WaitBuffer#0;class#TransactionalProcess#0" />
-            <element signature="e#6382#6383#0" expanded="true" />
-            <element signature="e#6460#6461#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessTotalLamport.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
+        <state relative-caret-position="393">
           <caret line="26" column="35" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/StatCollector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="31" column="5" lean-forward="true" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#560#561#0" expanded="true" />
+            <element signature="e#599#600#0" expanded="true" />
+            <element signature="e#971#972#0" expanded="true" />
+            <element signature="e#1039#1040#0" expanded="true" />
+            <element signature="e#1083#1084#0" expanded="true" />
+            <element signature="e#1152#1153#0" expanded="true" />
+            <element signature="e#1083#1084#0" expanded="true" />
+            <element signature="e#1163#1164#0" expanded="true" />
+            <element signature="e#1210#1211#0" expanded="true" />
+            <element signature="e#1272#1273#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lamport/timestamps/Timestamp.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="61" column="67" selection-start-line="61" selection-start-column="67" selection-end-line="61" selection-end-column="67" />
+        <state relative-caret-position="-548">
+          <caret line="7" column="111" selection-start-line="7" selection-start-column="111" selection-end-line="7" selection-end-column="111" />
           <folding>
             <element signature="e#1192#1193#0" expanded="true" />
             <element signature="e#1230#1231#0" expanded="true" />
@@ -855,33 +630,127 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java">
+    <entry file="file://$PROJECT_DIR$/src/lamport/datastore/TimestampedRecord.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
+        <state relative-caret-position="306">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="19" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple1PC.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="17" column="21" lean-forward="true" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/TransactionalProcess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="727">
+          <caret line="132" column="5" selection-start-line="132" selection-start-column="5" selection-end-line="132" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#ReadRequest#0;class#TransactionalProcess#0" />
+            <element signature="method#WriteRequest#0;class#TransactionalProcess#0" />
+            <element signature="method#PrewriteRequest#0;class#TransactionalProcess#0" />
+            <element signature="method#ReadCancelRequest#0;class#TransactionalProcess#0" />
+            <element signature="method#WriteCancelRequest#0;class#TransactionalProcess#0" />
+            <element signature="method#PrewriteCancelRequest#0;class#TransactionalProcess#0" />
+            <element signature="method#WaitBuffer#0;class#TransactionalProcess#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/datastore/TimeBufferedRecord.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="14" column="100" lean-forward="true" selection-start-line="14" selection-start-column="100" selection-end-line="18" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/Process.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1139">
+          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lamport/process/Process.java">
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessMV2PC_Priority.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="46" column="26" lean-forward="true" selection-start-line="46" selection-start-column="26" selection-end-line="46" selection-end-column="26" />
+        <state relative-caret-position="391">
+          <caret line="26" column="35" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SetArtificialDelay#0;class#Process#0" />
-            <element signature="method#GetRandomOutSocket#0;class#Process#0" />
-            <element signature="method#Connect#0;class#Process#0" />
-            <element signature="method#Listen#0;class#Process#0" />
-            <element signature="method#Send#0;class#Process#0" />
-            <element signature="method#Receive#0;class#Process#0" />
-            <element signature="method#ResponseSocketReader#0;class#Process#0" />
-            <element signature="method#InputSocketHandler#0;class#Process#0" />
-            <element signature="method#ProcessTimestamp#0;class#Process#0" />
-            <element signature="method#WaitResponse#0;class#Process#0" />
-            <element signature="method#WaitResponse#1;class#Process#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessMV1PC.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="404">
+          <caret line="54" column="13" selection-start-line="54" selection-start-column="13" selection-end-line="54" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/boot/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="47" column="9" lean-forward="true" selection-start-line="47" selection-start-column="9" selection-end-line="47" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="151" column="97" selection-start-line="151" selection-start-column="97" selection-end-line="151" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessSimple2PC_Priority.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="50" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/datastore/MultiVersionRecord.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="5" lean-forward="true" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/datastore/MultiVersionBufferedRecord.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="42" lean-forward="true" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lamport/process/ProcessMV2PC.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="120" column="81" selection-start-line="120" selection-start-column="81" selection-end-line="120" selection-end-column="81" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

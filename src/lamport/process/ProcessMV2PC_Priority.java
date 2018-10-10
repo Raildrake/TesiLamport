@@ -1,12 +1,11 @@
 package lamport.process;
 
-import lamport.datastore.TimeBufferedRecord;
 import lamport.payload.Payload;
 import lamport.timestamps.Timestamp;
 
-public class ProcessSimple2PC_Priority extends ProcessSimple2PC {
+public class ProcessMV2PC_Priority extends ProcessMV2PC {
 
-    public ProcessSimple2PC_Priority(int port) {
+    public ProcessMV2PC_Priority(int port) {
         super(port);
         GetTimestamp().Set(0,port,1);
     }
@@ -49,4 +48,5 @@ public class ProcessSimple2PC_Priority extends ProcessSimple2PC {
     }
     @Override
     void OnPayloadSent(Payload p) {}
+
 }

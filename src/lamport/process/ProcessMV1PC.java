@@ -1,24 +1,24 @@
 package lamport.process;
 
-import lamport.datastore.TimestampedRecord;
+import lamport.datastore.MultiVersionRecord;
 import lamport.payload.Payload;
 import lamport.payload.Request;
 import lamport.timestamps.Timestamp;
 
-import java.net.Socket;
 import java.util.LinkedList;
 
-public class ProcessSimple1PC extends TransactionalProcess {
+public class ProcessMV1PC extends TransactionalProcess {
 
-    public ProcessSimple1PC(int port) {
+    public ProcessMV1PC(int port) {
         super(port);
         GetTimestamp().Set(0,port);
     }
+
     @Override
     void InitData() {
-        GetDataStore().Add("A",new TimestampedRecord(2));
-        GetDataStore().Add("B",new TimestampedRecord(3));
-        GetDataStore().Add("C",new TimestampedRecord(5));
+        GetDataStore().Add("A", new MultiVersionRecord(2));
+        GetDataStore().Add("B", new MultiVersionRecord(3));
+        GetDataStore().Add("C", new MultiVersionRecord(5));
     }
 
     @Override
@@ -45,53 +45,50 @@ public class ProcessSimple1PC extends TransactionalProcess {
         Payload plB=new Payload();
 
         if (!ReadRequest(curTimestamp,GetRandomOutSocket(),"A",plA,null)) return false;
-        Log("Read A success!");
+        Debug("Read A success!");
 
         if (!ReadRequest(curTimestamp,GetRandomOutSocket(),"B",plB,null)) return false;
-        Log("Read B success!");
+        Debug("Read B success!");
 
         int newV=plA.GetArg1()+plB.GetArg1();
         if (!WriteRequest(curTimestamp,GetRandomOutSocket(),"A",newV,null,null)) return false;
-        Log("Write A success! ("+newV+")");
+        Debug("Write A success! ("+newV+")");
 
         return true;
     }
+
 
     @Override
     void PayloadReceivedHandler(Payload payload) {
         ProcessRequest(payload);
     }
-
     void ProcessRequest(Payload payload) {
-        //Siccome qui arrivano le richieste sul listen socket, possiamo aspettarci solo read o write
         String n = payload.GetTarget();
         try {
             GetDataStore().Lock(n);
 
             timestampLock.readLock().lock();
-            Timestamp ts = GetTimestamp();
+            Timestamp curTS = GetTimestamp();
             timestampLock.readLock().unlock();
 
-            TimestampedRecord record = (TimestampedRecord) GetDataStore().GetValue(n);
+            MultiVersionRecord record = (MultiVersionRecord) GetDataStore().GetValue(n);
 
             if (payload.GetRequest() == Request.READ) {
+                Debug("Received READ request for " + n + " with timestamp " + payload.GetTimestamp()+ " from "+payload.GetUsedSocket().getRemoteSocketAddress());
 
-                if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW, abbiamo TS<W-TS
-                    SendPayload(ts, payload.GetUsedSocket(), Request.FAIL_READ, payload.GetTarget(), -1);
-                } else {
-                    SendPayload(ts, payload.GetUsedSocket(), Request.SUCCESS_READ, payload.GetTarget(), record.GetValue());
-                    record.SetR_TS(payload.GetTimestamp());
-                }
+                //la eseguo sempre
+                SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_READ, payload.GetTarget(), record.GetOldestVersionBefore(payload.GetTimestamp()));
+                record.Read(payload.GetTimestamp());
 
-                GetDataStore().Unlock(n);
             } else if (payload.GetRequest() == Request.WRITE) {
+                Debug("Received WRITE request for " + n + " with timestamp " + payload.GetTimestamp() + " from " + payload.GetUsedSocket().getRemoteSocketAddress());
 
-                if (record.GetW_TS().IsGreaterThan(payload.GetTimestamp()) || record.GetR_TS().IsGreaterThan(payload.GetTimestamp())) { //fallito per conflitto RW/WW, abbiamo TS<W-TS oppure TS<R-TS
-                    SendPayload(ts, payload.GetUsedSocket(), Request.FAIL_WRITE, payload.GetTarget(), -1);
+                Timestamp tEnd=record.GetFirstWriteAfter(payload.GetTimestamp());
+                if (record.HasReadInInterval(payload.GetTimestamp(),tEnd)) {
+                    SendPayload(curTS, payload.GetUsedSocket(), Request.FAIL_WRITE, payload.GetTarget(), -1);
                 } else {
-                    SendPayload(ts, payload.GetUsedSocket(), Request.SUCCESS_WRITE, payload.GetTarget(), payload.GetArg1());
-                    record.SetValue(payload.GetArg1());
-                    record.SetW_TS(payload.GetTimestamp());
+                    SendPayload(curTS, payload.GetUsedSocket(), Request.SUCCESS_WRITE, payload.GetTarget(), -1);
+                    record.Write(payload.GetArg1(),payload.GetTimestamp());
                 }
 
             }
@@ -99,5 +96,4 @@ public class ProcessSimple1PC extends TransactionalProcess {
             GetDataStore().Unlock(n);
         }
     }
-
 }
