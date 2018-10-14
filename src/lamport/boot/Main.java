@@ -43,6 +43,8 @@ public class Main {
             case "MV1PC": process=new ProcessMV1PC(listenPort); break;
             case "MV2PC": process=new ProcessMV2PC(listenPort); break;
 
+            case "Conservative": process=new ProcessConservative(listenPort); break;
+
             case "Simple2PCP": process=new ProcessSimple2PC_Priority(listenPort); break;
             case "MV2PCP": process=new ProcessMV2PC_Priority(listenPort); break;
         }

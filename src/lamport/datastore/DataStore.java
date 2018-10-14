@@ -5,26 +5,12 @@ import lamport.payload.Payload;
 
 import javax.xml.crypto.Data;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class DataStore {
 
-    public class DataOutput {
-        private boolean success;
-        private Object value;
-
-        public DataOutput(boolean success) {
-            this.success=success;
-        }
-        public DataOutput(boolean success, Object value) {
-            this(success);
-            this.value=value;
-        }
-
-        public boolean WasSuccessful() { return success; }
-        public Object GetValue() { return value; }
-    }
     private class LockedObject {
         private Lock lock;
         private Object obj;
@@ -52,15 +38,11 @@ public class DataStore {
     }
     public Object GetValue(String n) {
         if (!Exists(n)) return null;
-        //Lock(n);
         Object res=data.get(n).GetObject();
-        //Unlock(n);
         return res;
     }
     public void SetValue(String n, Object value) {
-        //Lock(n);
         data.get(n).SetObject(value);
-        //Unlock(n);
     }
     private Lock GetLock(String n) {
         return data.get(n).GetLock();
@@ -79,4 +61,9 @@ public class DataStore {
     public void Clear() {
         this.data=new HashMap<>();
     }
+
+    public Set<String> GetKeys() {
+        return data.keySet();
+    }
+
 }

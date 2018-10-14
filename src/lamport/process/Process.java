@@ -29,7 +29,7 @@ public abstract class Process {
 
     private DataStore dataStore=new DataStore();
 
-    private List<Socket> outSockets=new LinkedList<>();
+    protected List<Socket> outSockets=new LinkedList<>();
     private List<Payload> responseQueue=new LinkedList<>();
     private HashMap<Socket,Thread> inConnections=new HashMap<>();
     private HashMap<Socket,Thread> outSocketReaders=new HashMap<>();
@@ -121,7 +121,7 @@ public abstract class Process {
         listenThread.start();
     }
 
-    public void Send(Socket s, Payload p) {
+    void Send(Socket s, Payload p) {
         try {
             if (GetArtificialLagMax() > 0 && GetArtificialLagMin() > 0)
                 Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialLagMin(), GetArtificialLagMax()));
@@ -138,7 +138,7 @@ public abstract class Process {
             e.printStackTrace();
         }
     }
-    private Payload Receive(Socket s) {
+    Payload Receive(Socket s) {
         try {
             if (GetArtificialLagMax() > 0 && GetArtificialLagMin() > 0)
                 Thread.sleep(ThreadLocalRandom.current().nextInt(GetArtificialLagMin(), GetArtificialLagMax()));
